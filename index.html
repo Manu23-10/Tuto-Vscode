@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sistema Marangatu - Formulario N° 120 V4 - Manuel Peña</title>
+  <style>
+    :root {
+      --marangatu-header: #0e3b5e;
+      --marangatu-bg: #eceff1;
+      --border-color: #888;
+      --table-header-bg: #d9e1e8;
+      --highlight-red: #fadbd8;
+      --highlight-green: #d4efdf;
+    }
+
+    * {
+      box-sizing: border-box;
+      font-family: Arial, Helvetica, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--marangatu-bg);
+      color: #000;
+      font-size: 11px;
+    }
+
+    .view { display: none; }
+    .view.active { display: block; }
+
+    /* LOGIN */
+    .login-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #0e3b5e, #1c2833);
+    }
+    .login-box {
+      background: #fff;
+      padding: 35px;
+      border-radius: 6px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+      width: 100%;
+      max-width: 420px;
+    }
+    .login-box h2 { color: #0e3b5e; text-align: center; margin-bottom: 5px; }
+    .login-box p { text-align: center; color: #666; font-size: 12px; margin-bottom: 20px; }
+    .form-group { margin-bottom: 12px; }
+    .form-group label { display: block; font-weight: bold; margin-bottom: 4px; font-size: 11px; }
+    .form-group input, .form-group select {
+      width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 3px; font-size: 12px;
+    }
+    .btn-submit {
+      width: 100%; padding: 10px; background-color: #0e3b5e; color: white;
+      border: none; border-radius: 3px; font-weight: bold; font-size: 13px; cursor: pointer; margin-top: 10px;
+    }
+    .btn-submit:hover { background-color: #09253b; }
+
+    /* HEADER MARANGATU */
+    .header {
+      background-color: #0e3b5e; color: white; padding: 10px 20px;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+
+    /* CONTAINER PRINCIPAL */
+    .main-container {
+      max-width: 1200px; margin: 15px auto; background: white;
+      border: 1px solid #aaa; padding: 15px; position: relative; overflow: hidden;
+    }
+
+    /* MARCA DE AGUA MANUEL PEÑA */
+    .watermark {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) rotate(-30deg);
+      font-size: 55px;
+      font-weight: bold;
+      color: rgba(14, 59, 94, 0.08);
+      white-space: nowrap;
+      pointer-events: none;
+      z-index: 10;
+      user-select: none;
+    }
+
+    /* FORMULARIO F120 ESTILOS OFICIALES */
+    .f120-top-banner {
+      border: 1px solid var(--border-color);
+      padding: 6px;
+      text-align: center;
+      font-weight: bold;
+      font-size: 11px;
+      background-color: #f4f6f7;
+      margin-bottom: 5px;
+    }
+    .f120-header-grid {
+      display: grid;
+      grid-template-columns: 1fr 2fr 1fr;
+      border: 1px solid var(--border-color);
+      margin-bottom: 10px;
+      background-color: #fff;
+    }
+    .f120-header-grid > div {
+      border: 1px solid var(--border-color);
+      padding: 6px;
+    }
+
+    .rubro-box {
+      border: 1px solid var(--border-color);
+      margin-bottom: 12px;
+      position: relative;
+      z-index: 1;
+    }
+    .rubro-header {
+      background-color: var(--table-header-bg);
+      font-weight: bold;
+      padding: 5px;
+      border-bottom: 1px solid var(--border-color);
+      font-size: 11px;
+    }
+    .f120-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .f120-table th, .f120-table td {
+      border: 1px solid var(--border-color);
+      padding: 3px 5px;
+    }
+    .f120-table th {
+      background-color: #eaeded;
+      text-align: center;
+      font-size: 10px;
+    }
+    .f120-table input {
+      width: 100%;
+      padding: 3px;
+      text-align: right;
+      border: 1px solid #aaa;
+      font-size: 11px;
+      font-family: monospace;
+    }
+    .f120-table input[readonly] {
+      background-color: #e5e8e8;
+      font-weight: bold;
+    }
+
+    .casilla-num {
+      display: inline-block;
+      background: #eee;
+      border: 1px solid #999;
+      font-size: 9px;
+      padding: 1px 3px;
+      margin-right: 3px;
+      font-weight: bold;
+    }
+
+    .alert-success {
+      background-color: #d4edda; color: #155724; padding: 12px; border-radius: 4px;
+      border: 1px solid #c3e6cb; margin-top: 15px; text-align: center; font-size: 12px; display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- VISTA 1: LOGIN -->
+  <div id="view-login" class="view active">
+    <div class="login-container">
+      <div class="login-box">
+        <h2>MARANGATU</h2>
+        <p>Sistema de Gestión Tributaria - DNIT</p>
+        <form id="loginForm">
+          <div class="form-group">
+            <label>RUC Contribuyente:</label>
+            <input type="text" id="ruc" required value="80012345">
+          </div>
+          <div class="form-group">
+            <label>DV:</label>
+            <input type="text" id="dv" style="width: 50px;" required value="6">
+          </div>
+          <div class="form-group">
+            <label>Razón Social / Nombre y Apellido:</label>
+            <input type="text" id="razon" required value="MANUEL PEÑA">
+          </div>
+          <div class="form-group">
+            <label>Contraseña:</label>
+            <input type="password" id="password" required value="123456">
+          </div>
+          <button type="submit" class="btn-submit">Ingresar al Sistema</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- VISTA 2: MENÚ DE SELECCIÓN DE OBLIGACIÓN -->
+  <div id="view-menu" class="view">
+    <div class="header">
+      <div><strong>MARANGATU</strong> - Sistema de Presentación</div>
+      <div>Contribuyente: <strong id="userDisplay">MANUEL PEÑA</strong> | <a href="#" onclick="logout()" style="color:#fff;">Cerrar Sesión</a></div>
+    </div>
+
+    <div class="main-container" style="max-width: 800px;">
+      <h3 style="border-bottom: 2px solid #0e3b5e; padding-bottom: 5px; color:#0e3b5e; margin-bottom: 15px;">Presentar Declaración Jurada</h3>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+        <div class="form-group">
+          <label>1. Seleccionar Obligación:</label>
+          <select id="obligacionSelect" onchange="actualizarFormulario()">
+            <option value="">-- Seleccione una Obligación --</option>
+            <option value="211">211 - IMPUESTO AL VALOR AGREGADO (IVA)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>2. Formulario Asignado:</label>
+          <select id="formularioSelect" disabled>
+            <option value="">-- Automático --</option>
+            <option value="120">120 v.4 - IVA GENERAL</option>
+          </select>
+        </div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+        <div class="form-group">
+          <label>3. Mes (MM):</label>
+          <select id="mesSelect">
+            <option value="01">01 - Enero</option>
+            <option value="02">02 - Febrero</option>
+            <option value="03">03 - Marzo</option>
+            <option value="04">04 - Abril</option>
+            <option value="05">05 - Mayo</option>
+            <option value="06">06 - Junio</option>
+            <option value="07">07 - Julio</option>
+            <option value="08">08 - Agosto</option>
+            <option value="09">09 - Septiembre</option>
+            <option value="10">10 - Octubre</option>
+            <option value="11">11 - Noviembre</option>
+            <option value="12">12 - Diciembre</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>4. Año (AAAA):</label>
+          <input type="number" id="anioInput" value="2026" min="2020" max="2030">
+        </div>
+      </div>
+
+      <button class="btn-submit" onclick="irAFormulario()">Siguiente / Cargar Formulario</button>
+    </div>
+  </div>
+
+  <!-- VISTA 3: FORMULARIO 120 V.4 COMPLETO Y FIEL AL PDF -->
+  <div id="view-form120" class="view">
+    <div class="header">
+      <div><strong>DNIT - SET</strong> | Formulario N° 120 Versión 4</div>
+      <div><a href="#" onclick="volverAMenu()" style="color:#fff;">← Volver al Menú</a></div>
+    </div>
+
+    <div class="main-container">
+      <!-- MARCA DE AGUA MANUEL PEÑA -->
+      <div class="watermark">DESARROLLADO POR MANUEL PEÑA</div>
+
+      <div class="f120-top-banner">
+        PARA LLENAR LEA EL INSTRUCTIVO DISPONIBLE EN LA WEB - LOS IMPORTES SE CONSIGNARÁN SIN CÉNTIMOS
+      </div>
+
+      <!-- CABECERA PRINCIPAL -->
+      <div class="f120-header-grid">
+        <div>
+          <strong>SET / TRIBUTACIÓN</strong><br>
+          FORMULARIO N° <strong>120</strong> VERSIÓN 4
+        </div>
+        <div style="text-align: center;">
+          <strong style="font-size: 13px;">IMPUESTO AL VALOR AGREGADO</strong><br>
+          DECLARACIÓN JURADA
+        </div>
+        <div>
+          <strong>Número de Orden:</strong> <span class="casilla-num">01</span> 20269981234<br>
+          <label><input type="radio" name="tipoDj" checked> <span class="casilla-num">02</span> Original</label><br>
+          <label><input type="radio" name="tipoDj"> <span class="casilla-num">03</span> Rectificativa</label><br>
+          N° Orden Rectificada: <span class="casilla-num">04</span> <input type="text" style="width: 80px;" disabled>
+        </div>
+      </div>
+
+      <div class="f120-header-grid">
+        <div>
+          <strong>RUC:</strong> <span id="fRuc">80012345</span> - DV: <span id="fDv">6</span>
+        </div>
+        <div>
+          <strong>Razón Social / Apellidos y Nombres:</strong> <span id="fRazon" style="font-weight:bold;">MANUEL PEÑA</span>
+        </div>
+        <div>
+          <strong>Período Fiscal:</strong> Mes: <span class="casilla-num">05</span> <span id="fMes">09</span> Año: <span id="fAnio">2026</span>
+        </div>
+      </div>
+
+      <div style="font-size: 9px; font-weight: bold; margin-bottom: 8px;">
+        PARA CONTRIBUYENTES QUE REALICEN OPERACIONES GRAVADAS Y EXONERADAS (INCLUIDAS LAS EXPORTACIONES): Declaración Anexo del Exportador Hoja de Cálculo
+      </div>
+
+      <!-- RUBRO 1 -->
+      <div class="rubro-box">
+        <div class="rubro-header">RUBRO 1 - ENAJENACIÓN DE BIENES Y/O PRESTACIÓN DE SERVICIOS DEL PERIODO</div>
+        <table class="f120-table">
+          <thead>
+            <tr>
+              <th style="width:3%;">INC.</th>
+              <th>CONCEPTO</th>
+              <th style="width:22%;">I - MONTO IMPONIBLE</th>
+              <th style="width:20%;">II - AL 5% (IVA DÉBITO)</th>
+              <th style="width:20%;">III - IVA DÉBITO AL 10%</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="text-align:center;">a</td>
+              <td>Enajenación de bienes y/o prestación de servicios gravados con tasa del 10%</td>
+              <td><span class="casilla-num">10</span><input type="number" id="c10" value="0" oninput="calcularF120()"></td>
+              <td style="background:#eee;">-</td>
+              <td><span class="casilla-num">22</span><input type="number" id="c22" readonly value="0"></td>
+            </tr>
+            <tr>
+              <td style="text-align:center;">b</td>
+              <td>Enajenación de productos agrícolas en estado natural y sus derivados del primer proceso de elaboración o industrialización gravados con tasa del 5%</td>
+              <td><span class="casilla-num">150</span><input type="number" id="c150" value="0" oninput="calcularF120()"></td>
+              <td><span class="casilla-num">156</span><input type="number" id="c156" readonly value="0"></td>
+              <td style="background:#eee;">-</td>
+            </tr>
+            <tr>
+              <td style="text-align:center;">c</td>
+              <td>Enajenación de otros bienes y/o prestación de servicios gravados con tasa del 5%</td>
+              <td><span class="casilla-num">151</span><input type="number" id="c151" value="0" oninput="calcularF120()"></td>
+              <td><span class="casilla-num">157</span><input type="number" id="c157" readonly value="0"></td>
+              <td style="background:#eee;">-</td>
+            </tr>
+            <tr>
+              <td style="text-align:center;">d</td>
+              <td>Enajenación de bienes, prestación de servicios o ingresos exonerados o no alcanzados por el Impuesto</td>
+              <td><span class="casilla-num">12</span><input type="number" id="c12" value="0" oninput="calcularF120()"></td>
+              <td style="background:#eee;">-</td>
+              <td style="background:#eee;">-</td>
+            </tr>
+            <tr>
+              <td style="text-align:center;">e</td>
+              <td>Exportación de productos agrícolas en estado natural y sus derivados del primer proceso de elaboración o industrialización</td>
+              <td><span class="casilla-num">152</span><input type="number" id="c152" value="0" oninput="calcularF120()"></td>
+              <td style="background:#eee;">-</td>
+              <td style="background:#eee;">-</td>
+            </tr>
+            <tr>
+              <td style="text-align:center;">f</td>
+              <td>Prestación de Servicios de Flete Internacional para la exportación de bienes</td>
+              <td><span class="casilla-num">153</span><input type="number" id="c153" value="0" oninput="calcularF120()"></td>
+              <td style="background:#eee;">-</td>
+              <td style="background:#eee;">-</td>
+            </tr>
+            <tr>
+              <td style="text-align:center;">g</td>
+              <td>Exportación de otros bienes</td>
+              <td><span class="casilla-num">14</span><input type="number" id="c14" value="0" oninput="calcularF120()"></td>
+              <td style="background:#eee;">-</td>
+              <td style="background:#eee;">-</td>
+            </tr>
+            <tr>
+              <td style="text-align:center;">h</td>
+              <td>Ajustes de precios, devoluciones realizadas, descuentos obtenidos y recupero de Impuestos por operaciones incobrables, declaradas a la tasa del 10%</td>
+              <td><span class="casilla-num">15</span><input type="number" id="c15" value="0" oninput="calcularF120()"></td>
+              <td style="background:#eee;">-</td>
+              <td><span class="casilla-num">158</span><input type="number" id="c158" value="0" oninput="calcularF120()"></td>
+            </tr>
+            <tr>
+              <td style="text-align:center;">i</td>
+              <td>Ajustes de precios, devoluciones realizadas, descuentos obtenidos y recupero de Impuestos por operaciones incobrables, declaradas a la tasa del 5%, correspondientes a la adquisición de productos agrícolas...</td>
+              <td><span class="casilla-num">154</span><input type="number" id="c154" value="0" oninput="calcularF120()"></td>
+              <td><span class="casilla-num">159</span><input type="number" id="c159" value="0" oninput="calcularF120()"></td>
+              <td style="background:#eee;">-</td>
+            </tr>
+            <tr>
+              <td style="text-align:center;">j</td>
+              <td>Ajustes de precios, devoluciones realizadas, descuentos obtenidos y recupero de Impuestos por operaciones incobrables, declaradas a la tasa del 5%, correspondientes a la adquisición de otros bienes y servicios</td>
+              <td><span class="casilla-num">155</span><input type="number" id="c155" value="0" oninput="calcularF120()"></td>
+              <td><span class="casilla-num">21</span><input type="number" id="c21" value="0" oninput="calcularF120()"></td>
+              <td style="background:#eee;">-</td>
+            </tr>
+            <tr>
+              <td style="text-align:center;">k</td>
+              <td>Ajustes de precios, devoluciones realizadas, descuentos obtenidos y recupero por operaciones incobrables, exonerados o no alcanzados por el Impuesto</td>
+              <td><span class="casilla-num">17</span><input type="number" id="c17" value="0" oninput="calcularF120()"></td>
+              <td style="background:#eee;">-</td>
+              <td style="background:#eee;">-</td>
+            </tr>
+            <tr style="background:#eaf2f8; font-weight:bold;">
+              <td style="text-align:center;">l</td>
+              <td>TOTAL (Col. I: Inc. a+b+c+d+e+f+g+h+i+j+k); (Col. II: b+c+i+j); (Col. III: Inc. a+h)</td>
+              <td><span class="casilla-num">18</span><input type="number" id="c18" readonly value="0"></td>
+              <td><span class="casilla-num">23</span><input type="number" id="c23" readonly value="0" style="color:red;"></td>
+              <td><span class="casilla-num">24</span><input type="number" id="c24" readonly value="0" style="color:red;"></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- RUBRO 2 -->
+      <div class="rubro-box">
+        <div class="rubro-header">RUBRO 2 - ENAJENACIÓN DE BIENES Y/O PRESTACIÓN DE SERVICIOS DE LOS ÚLTIMOS SEIS (6) MESES (INCLUIDO EL PERIODO QUE SE DECLARA)</div>
+        <table class="f120-table">
+          <thead>
+            <tr>
+              <th style="width:3%;">INC.</th>
+              <th>CONCEPTO</th>
+              <th style="width:30%;">MONTO ACUMULADO</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="text-align:center;">a</td>
+              <td>Enajenación de bienes y/o prestación de servicios gravados en el mercado interno, con excepción de los productos agrícolas en estado natural</td>
+              <td><span class="casilla-num">160</span><input type="number" id="c160" value="0" oninput="calcularF120()"></td>
+            </tr>
+            <tr>
+              <td style="text-align:center;">b</td>
+              <td>Enajenación de productos agrícolas en estado natural y sus derivados del primer proceso de elaboración o industrialización en el mercado interno</td>
+              <td><span class="casilla-num">26</span><input type="number" id="c26" value="0" oninput="calcularF120()"></td>
+            </tr>
+            <tr>
+              <td style="text-align:center;">c</td>
+              <td>Enajenación de bienes y/o prestación de servicios exonerados o no alcanzados</td>
+              <td><span class="casilla-num">161</span><input type="number" id="c161" value="0" oninput="calcularF120()"></td>
+            </tr>
+            <tr style="background:#f2f4f4; font-weight:bold;">
+              <td style="text-align:center;">d</td>
+              <td>TOTAL DE OPERACIONES EN EL MERCADO INTERNO (Inc. a+b+c)</td>
+              <td><span class="casilla-num">27</span><input type="number" id="c27" readonly value="0"></td>
+            </tr>
+            <tr>
+              <td style="text-align:center;">e</td>
+              <td>Exportación de productos agrícolas en estado natural y sus derivados del primer proceso de elaboración o industrialización</td>
+              <td><span class="casilla-num">162</span><input type="number" id="c162" value="0" oninput="calcularF120()"></td>
+            </tr>
+            <tr>
+              <td style="text-align:center;">f</td>
+              <td>Servicios de flete internacional prestados por empresas transportadoras para la exportación de bienes</td>
+              <td><span class="casilla-num">163</span><input type="number" id="c163" value="0" oninput="calcularF120()"></td>
+            </tr>
+            <tr>
+              <td style="text-align:center;">g</td>
+              <td>Exportación de otros bienes</td>
+              <td><span class="casilla-num">29</span><input type="number" id="c29" value="0" oninput="calcularF120()"></td>
+            </tr>
+            <tr style="background:#f2f4f4; font-weight:bold;">
+              <td style="text-align:center;">h</td>
+              <td>TOTAL DE OPERACIONES DE EXPORTACIÓN (Inc. e+f+g)</td>
+              <td><span class="casilla-num">30</span><input type="number" id="c30" readonly value="0"></td>
+            </tr>
+            <tr style="background:#eaf2f8; font-weight:bold;">
+              <td style="text-align:center;">i</td>
+              <td>TOTAL DE OPERACIONES ACUMULADAS (Inc. d+h)</td>
+              <td><span class="casilla-num">31</span><input type="number" id="c31" readonly value="0"></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- RUBRO 3 -->
+      <div class="rubro-box">
+        <div class="rubro-header">RUBRO 3 - COMPRAS LOCALES E IMPORTACIONES DEL PERIODO</div>
+        <table class="f120-table">
+          <thead>
+            <tr>
+              <th style="width:3%;">INC.</th>
+              <th>CONCEPTO</th>
+              <th style="width:20%;">I - MONTO IMPONIBLE AL 5%</th>
+              <th style="width:20%;">II - MONTO IMPONIBLE AL 10%</th>
+              <th style="width:20%;">III - IVA CRÉDITO</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="text-align:center;">a</td>
+              <td>IVA Crédito atribuido directamente a operaciones gravadas en el mercado interno</td>
+              <td><span class="casilla-num">132</span><input type="number" id="c132" value="0" oninput="calcularF120()"></td>
+              <td><span class="casilla-num">35</span><input type="number" id="c35" value="0" oninput="calcularF120()"></td>
+              <td><span class="casilla-num">38</span><input type="number" id="c38" readonly value="0"></td>
+            </tr>
+            <tr>
+              <td style="text-align:center;">b</td>
+              <td>IVA Crédito atribuido indistintamente a operaciones gravadas, exoneradas o no alcanzadas</td>
+              <td><span class="casilla-num">33</span><input type="number" id="c33" value="0" oninput="calcularF120()"></td>
+              <td><span class="casilla-num">36</span><input type="number" id="c36" value="0" oninput="calcularF120()"></td>
+              <td><span class="casilla-num">39</span><input type="number" id="c39" readonly value="0"></td>
+            </tr>
+            <tr>
+              <td style="text-align:center;">c</td>
+              <td>IVA Crédito atribuido proporcionalmente a operaciones gravadas en el mercado interno (Rubro 3, Col. III: Inc. b x (Rubro 2 Inc. a+b / Inc. d))</td>
+              <td style="background:#eee;">-</td>
+              <td style="background:#eee;">-</td>
+              <td><span class="casilla-num">164</span><input type="number" id="c164" readonly value="0"></td>
+            </tr>
+            <tr>
+              <td style="text-align:center;">d</td>
+              <td>IVA Crédito atribuido proporcionalmente a operaciones gravadas en el mercado interno y a exportación (Proviene de la casilla 216 de la hoja de cálculo)</td>
+              <td style="background:#eee;">-</td>
+              <td style="background:#eee;">-</td>
+              <td><span class="casilla-num">165</span><input type="number" id="c165" value="0" oninput="calcularF120()"></td>
+            </tr>
+            <tr>
+              <td style="text-align:center;">e</td>
+              <td>IVA Crédito por ajustes de precios, devoluciones y descuentos otorgados, por ventas ya declaradas y operaciones declaradas incobrables</td>
+              <td><span class="casilla-num">34</span><input type="number" id="c34" value="0" oninput="calcularF120()"></td>
+              <td><span class="casilla-num">37</span><input type="number" id="c37" value="0" oninput="calcularF120()"></td>
+              <td><span class="casilla-num">42</span><input type="number" id="c42" readonly value="0"></td>
+            </tr>
+            <tr style="background:#eaf2f8; font-weight:bold;">
+              <td style="text-align:center;">f</td>
+              <td>TOTAL DE IVA CRÉDITO PARA OPERACIONES EN EL MERCADO INTERNO (Col. III: Inc. a+c+d+e)</td>
+              <td style="background:#eee;">-</td>
+              <td style="background:#eee;">-</td>
+              <td><span class="casilla-num">43</span><input type="number" id="c43" readonly value="0" style="color:green;"></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- RUBRO 4 -->
+      <div class="rubro-box">
+        <div class="rubro-header">RUBRO 4 - DETERMINACIÓN DEL IMPUESTO O DEL SALDO TÉCNICO</div>
+        <table class="f120-table">
+          <thead>
+            <tr>
+              <th style="width:3%;">INC.</th>
+              <th>CONCEPTO</th>
+              <th style="width:30%;">MONTO</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="text-align:center;">a</td>
+              <td>IVA Débito (Proviene del Rubro 1, Col. II y III: Inc. l)</td>
+              <td><span class="casilla-num">44</span><input type="number" id="c44" readonly value="0"></td>
+            </tr>
+            <tr>
+              <td style="text-align:center;">b</td>
+              <td>IVA Crédito (Proviene del Rubro 3, Inc. f)</td>
+              <td><span class="casilla-num">45</span><input type="number" id="c45" readonly value="0"></td>
+            </tr>
+            <tr>
+              <td style="text-align:center;">c</td>
+              <td>Saldo a favor del contribuyente del periodo anterior por operaciones en el mercado interno (Proviene del Rubro 4, Inc. f; de la DDJJ del periodo anterior)</td>
+              <td><span class="casilla-num">46</span><input type="number" id="c46" value="0" oninput="calcularF120()"></td>
+            </tr>
+            <tr style="background:#d4efdf;">
+              <td style="text-align:center;">d</td>
+              <td>SALDO A FAVOR DEL CONTRIBUYENTE cuando el Inc. a sea menor que Inc. b+Inc. c</td>
+              <td><span class="casilla-num">166</span><input type="number" id="c166" readonly value="0" style="color:green; font-weight:bold;"></td>
+            </tr>
+            <tr>
+              <td style="text-align:center;">e</td>
+              <td>Saldo a favor del contribuyente a remitir en beneficio del Fisco (Art. 91 de la Ley). Hasta el monto del Inc. d</td>
+              <td><span class="casilla-num">167</span><input type="number" id="c167" value="0" oninput="calcularF120()"></td>
+            </tr>
+            <tr style="background:#d4efdf;">
+              <td style="text-align:center;">f</td>
+              <td>SALDO A FAVOR DEL CONTRIBUYENTE (Monto a trasladar en el Inc. c del presente Rubro, en el siguiente periodo fiscal), Inc. d - Inc. e</td>
+              <td><span class="casilla-num">47</span><input type="number" id="c47" readonly value="0" style="color:green; font-weight:bold;"></td>
+            </tr>
+            <tr style="background:#fadbd8;">
+              <td style="text-align:center;">g</td>
+              <td>Saldo a favor del fisco, cuando Inc. a sea mayor que Inc. b+Inc. c</td>
+              <td><span class="casilla-num">48</span><input type="number" id="c48" readonly value="0" style="color:red; font-weight:bold;"></td>
+            </tr>
+            <tr>
+              <td style="text-align:center;">h</td>
+              <td>Monto del IVA Crédito utilizado en el periodo que se liquida para operaciones gravadas (Proviene de la casilla 148 del Anexo Exportador)</td>
+              <td><span class="casilla-num">49</span><input type="number" id="c49" value="0" oninput="calcularF120()"></td>
+            </tr>
+            <tr>
+              <td style="text-align:center;">i</td>
+              <td>Deducción conforme al Art. 7º y 8º de la Ley N° 4.962/2013 por incorporación de personas con discapacidad...</td>
+              <td><span class="casilla-num">168</span><input type="number" id="c168" value="0" oninput="calcularF120()"></td>
+            </tr>
+            <tr style="background:#fadbd8;">
+              <td style="text-align:center;">j</td>
+              <td>IMPUESTO DETERMINADO (Inc. g - Inc. h - Inc. i)</td>
+              <td><span class="casilla-num">50</span><input type="number" id="c50" readonly value="0" style="color:red; font-weight:bold;"></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- RUBRO 5 -->
+      <div class="rubro-box">
+        <div class="rubro-header">RUBRO 5 - IMPUESTO DETERMINADO Y/O SALDO FINANCIERO A FAVOR DEL CONTRIBUYENTE</div>
+        <table class="f120-table">
+          <thead>
+            <tr>
+              <th style="width:3%;">INC.</th>
+              <th>CONCEPTO</th>
+              <th style="width:25%;">I - MONTO A FAVOR DEL CONTRIBUYENTE</th>
+              <th style="width:25%;">II - MONTO A FAVOR DEL FISCO</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="text-align:center;">a</td>
+              <td>Impuesto determinado para operaciones gravadas (Proviene del Rubro 4, Inc. j)</td>
+              <td style="background:#eee;">-</td>
+              <td><span class="casilla-num">55</span><input type="number" id="c55" readonly value="0"></td>
+            </tr>
+            <tr>
+              <td style="text-align:center;">b</td>
+              <td>Saldo a favor del contribuyente del periodo anterior (Proviene del Rubro 5, Col. I: Inc. g, de la DDJJ del periodo anterior)</td>
+              <td><span class="casilla-num">51</span><input type="number" id="c51" value="0" oninput="calcularF120()"></td>
+              <td style="background:#eee;">-</td>
+            </tr>
+            <tr>
+              <td style="text-align:center;">c</td>
+              <td>Retenciones computables por operaciones gravadas</td>
+              <td><span class="casilla-num">52</span><input type="number" id="c52" value="0" oninput="calcularF120()"></td>
+              <td style="background:#eee;">-</td>
+            </tr>
+            <tr>
+              <td style="text-align:center;">d</td>
+              <td>Percepciones computables por operaciones gravadas</td>
+              <td><span class="casilla-num">169</span><input type="number" id="c169" value="0" oninput="calcularF120()"></td>
+              <td style="background:#eee;">-</td>
+            </tr>
+            <tr>
+              <td style="text-align:center;">e</td>
+              <td>Multa por presentar la Declaración Jurada con posterioridad al vencimiento</td>
+              <td style="background:#eee;">-</td>
+              <td><span class="casilla-num">56</span><input type="number" id="c56" value="0" oninput="calcularF120()"></td>
+            </tr>
+            <tr style="background:#eaf2f8; font-weight:bold;">
+              <td style="text-align:center;">f</td>
+              <td>SUBTOTALES: (Col. I: Inc. b+c+d); (Col. II: Inc. a+e)</td>
+              <td><span class="casilla-num">53</span><input type="number" id="c53" readonly value="0"></td>
+              <td><span class="casilla-num">57</span><input type="number" id="c57" readonly value="0"></td>
+            </tr>
+            <tr style="background:#d4efdf; font-weight:bold;">
+              <td style="text-align:center;">g</td>
+              <td>SALDO A FAVOR DEL CONTRIBUYENTE (Monto a trasladar al siguiente periodo fiscal en el Inc. b del presente Rubro). Diferencia entre Col. I y II: Inc. f...</td>
+              <td><span class="casilla-num">54</span><input type="number" id="c54" readonly value="0" style="color:green;"></td>
+              <td style="background:#eee;">-</td>
+            </tr>
+            <tr style="background:#fadbd8; font-weight:bold;">
+              <td style="text-align:center;">h</td>
+              <td>SALDO A PAGAR A FAVOR DEL FISCO (Diferencia entre Col. I y II: Inc. f, cuando Col. II sea mayor que Col. I)</td>
+              <td style="background:#eee;">-</td>
+              <td><span class="casilla-num">58</span><input type="number" id="c58" readonly value="0" style="color:red;"></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- RUBRO 6 -->
+      <div class="rubro-box">
+        <div class="rubro-header">RUBRO 6 - INFORMACIÓN DE LAS COMPRAS DEL PERIODO, VINCULADAS A OPERACIONES EXONERADAS O NO ALCANZADAS POR EL IMPUESTO</div>
+        <table class="f120-table">
+          <thead>
+            <tr>
+              <th style="width:3%;">INC.</th>
+              <th>CONCEPTO</th>
+              <th style="width:25%;">I - MONTO</th>
+              <th style="width:25%;">II - IVA</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="text-align:center;">a</td>
+              <td>Compras con IVA Crédito del 10% relacionadas directamente a operaciones exoneradas o no alcanzadas por el Impuesto</td>
+              <td><span class="casilla-num">59</span><input type="number" id="c59" value="0"></td>
+              <td><span class="casilla-num">65</span><input type="number" id="c65" value="0"></td>
+            </tr>
+            <tr>
+              <td style="text-align:center;">b</td>
+              <td>Compras con IVA Crédito del 5% relacionadas directamente a operaciones exoneradas o no alcanzadas por el Impuesto</td>
+              <td><span class="casilla-num">60</span><input type="number" id="c60" value="0"></td>
+              <td><span class="casilla-num">66</span><input type="number" id="c66" value="0"></td>
+            </tr>
+            <tr>
+              <td style="text-align:center;">c</td>
+              <td>Compras exentas relacionadas a operaciones exoneradas, no alcanzadas y a exportaciones</td>
+              <td><span class="casilla-num">61</span><input type="number" id="c61" value="0"></td>
+              <td style="background:#eee;">-</td>
+            </tr>
+            <tr>
+              <td style="text-align:center;">d</td>
+              <td>Compras exentas relacionadas a operaciones exoneradas o no alcanzadas por el Impuesto</td>
+              <td><span class="casilla-num">62</span><input type="number" id="c62" value="0"></td>
+              <td style="background:#eee;">-</td>
+            </tr>
+            <tr>
+              <td style="text-align:center;">e</td>
+              <td>Ajustes de precios, descuentos otorgados y/o devoluciones recibidas, por enajenación de bienes o prestación de servicios exonerados o no alcanzados...</td>
+              <td><span class="casilla-num">63</span><input type="number" id="c63" value="0"></td>
+              <td style="background:#eee;">-</td>
+            </tr>
+            <tr>
+              <td style="text-align:center;">f</td>
+              <td>Impuesto al Valor Agregado - Costo o Gasto deducible en el IRE / IRP</td>
+              <td><span class="casilla-num">64</span><input type="number" id="c64" value="0"></td>
+              <td style="background:#eee;">-</td>
+            </tr>
+            <tr>
+              <td style="text-align:center;">g</td>
+              <td>Impuesto al Valor Agregado - Costo o Gasto por remisión del saldo IVA Crédito al fisco, no deducible en el IRE / IRP</td>
+              <td><span class="casilla-num">170</span><input type="number" id="c170" value="0"></td>
+              <td style="background:#eee;">-</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- PIE DE DECLARACIÓN -->
+      <div style="border: 1px solid var(--border-color); padding: 8px; font-size: 10px; margin-bottom: 15px; background: #fafafa;">
+        El que suscribe en su carácter de Contribuyente/Representante Legal declara que los datos consignados en este formulario son correctos, íntegros, verdaderos y han sido confeccionados sin omitir dato alguno.<br><br>
+        <strong>Lugar y Fecha:</strong> Coronel Bogado, <span id="fFechaHoy"></span> | <strong>Firma:</strong> MANUEL PEÑA
+      </div>
+
+      <button class="btn-submit" onclick="presentarDeclaracion()">Presentar Declaración Jurada Formulario 120 V4</button>
+
+      <div id="alertSuccess" class="alert-success">
+        <strong>¡DECLARACIÓN JURADA PRESENTADA CON ÉXITO EN MARANGATU!</strong><br>
+        Se ha registrado la presentación a nombre de: <strong id="resRazon">MANUEL PEÑA</strong>.<br>
+        Número de Orden Oficial asignado: <strong>20269981234</strong>.
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function showView(viewId) {
+      document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+      document.getElementById(viewId).classList.add('active');
+    }
+
+    // LOGIN
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const ruc = document.getElementById('ruc').value;
+      const dv = document.getElementById('dv').value;
+      const razon = document.getElementById('razon').value;
+
+      document.getElementById('userDisplay').innerText = razon;
+      document.getElementById('fRuc').innerText = ruc;
+      document.getElementById('fDv').innerText = dv;
+      document.getElementById('fRazon').innerText = razon;
+      document.getElementById('resRazon').innerText = razon;
+
+      // Colocar fecha de hoy
+      const hoy = new Date();
+      document.getElementById('fFechaHoy').innerText = `${hoy.getDate()}/${hoy.getMonth()+1}/${hoy.getFullYear()}`;
+
+      showView('view-menu');
+    });
+
+    function logout() { showView('view-login'); }
+
+    function actualizarFormulario() {
+      const ob = document.getElementById('obligacionSelect').value;
+      document.getElementById('formularioSelect').value = ob === "211" ? "120" : "";
+    }
+
+    function irAFormulario() {
+      if (!document.getElementById('obligacionSelect').value) {
+        alert("Por favor seleccione la obligación 211.");
+        return;
+      }
+      document.getElementById('fMes').innerText = document.getElementById('mesSelect').value;
+      document.getElementById('fAnio').innerText = document.getElementById('anioInput').value;
+      document.getElementById('alertSuccess').style.display = 'none';
+      showView('view-form120');
+    }
+
+    function volverAMenu() { showView('view-menu'); }
+
+    // FÓRMULAS OFICIALES Y MATEMÁTICA EXACTA DEL FORMULARIO 120 V4
+    function calcularF120() {
+      // RUBRO 1
+      const c10 = parseFloat(document.getElementById('c10').value) || 0;
+      const c150 = parseFloat(document.getElementById('c150').value) || 0;
+      const c151 = parseFloat(document.getElementById('c151').value) || 0;
+      const c12 = parseFloat(document.getElementById('c12').value) || 0;
+      const c152 = parseFloat(document.getElementById('c152').value) || 0;
+      const c153 = parseFloat(document.getElementById('c153').value) || 0;
+      const c14 = parseFloat(document.getElementById('c14').value) || 0;
+      const c15 = parseFloat(document.getElementById('c15').value) || 0;
+      const c154 = parseFloat(document.getElementById('c154').value) || 0;
+      const c155 = parseFloat(document.getElementById('c155').value) || 0;
+      const c17 = parseFloat(document.getElementById('c17').value) || 0;
+
+      const c158 = parseFloat(document.getElementById('c158').value) || 0;
+      const c159 = parseFloat(document.getElementById('c159').value) || 0;
+      const c21 = parseFloat(document.getElementById('c21').value) || 0;
+
+      // Débitos automáticos
+      const c22 = Math.round(c10 * 0.10);
+      const c156 = Math.round(c150 * 0.05);
+      const c157 = Math.round(c151 * 0.05);
+
+      document.getElementById('c22').value = c22;
+      document.getElementById('c156').value = c156;
+      document.getElementById('c157').value = c157;
+
+      // Totales Rubro 1
+      const c18 = c10 + c150 + c151 + c12 + c152 + c153 + c14 + c15 + c154 + c155 + c17;
+      const c23 = c156 + c157 + c159 + c21;
+      const c24 = c22 + c158;
+
+      document.getElementById('c18').value = c18;
+      document.getElementById('c23').value = c23;
+      document.getElementById('c24').value = c24;
+
+      // RUBRO 2
+      const c160 = parseFloat(document.getElementById('c160').value) || 0;
+      const c26 = parseFloat(document.getElementById('c26').value) || 0;
+      const c161 = parseFloat(document.getElementById('c161').value) || 0;
+      const c27 = c160 + c26 + c161;
+
+      const c162 = parseFloat(document.getElementById('c162').value) || 0;
+      const c163 = parseFloat(document.getElementById('c163').value) || 0;
+      const c29 = parseFloat(document.getElementById('c29').value) || 0;
+      const c30 = c162 + c163 + c29;
+
+      const c31 = c27 + c30;
+
+      document.getElementById('c27').value = c27;
+      document.getElementById('c30').value = c30;
+      document.getElementById('c31').value = c31;
+
+      // RUBRO 3
+      const c132 = parseFloat(document.getElementById('c132').value) || 0;
+      const c35 = parseFloat(document.getElementById('c35').value) || 0;
+      const c38 = Math.round((c132 * 0.05) + (c35 * 0.10));
+
+      const c33 = parseFloat(document.getElementById('c33').value) || 0;
+      const c36 = parseFloat(document.getElementById('c36').value) || 0;
+      const c39 = Math.round((c33 * 0.05) + (c36 * 0.10));
+
+      // Prorrateo c164: c39 x ( (c160 + c26) / c27 ) o según instructivo c39 x (c27 / c31)
+      let c164 = 0;
+      if (c27 > 0 && c31 > 0) {
+        c164 = Math.round(c39 * ((c160 + c26) / c27));
+      }
+
+      const c165 = parseFloat(document.getElementById('c165').value) || 0;
+
+      const c34 = parseFloat(document.getElementById('c34').value) || 0;
+      const c37 = parseFloat(document.getElementById('c37').value) || 0;
+      const c42 = Math.round((c34 * 0.05) + (c37 * 0.10));
+
+      const c43 = c38 + c164 + c165 + c42;
+
+      document.getElementById('c38').value = c38;
+      document.getElementById('c39').value = c39;
+      document.getElementById('c164').value = c164;
+      document.getElementById('c42').value = c42;
+      document.getElementById('c43').value = c43;
+
+      // RUBRO 4
+      const c44 = c23 + c24;
+      const c45 = c43;
+      const c46 = parseFloat(document.getElementById('c46').value) || 0;
+
+      document.getElementById('c44').value = c44;
+      document.getElementById('c45').value = c45;
+
+      const totalCreditos4 = c45 + c46;
+      let c166 = 0;
+      let c48 = 0;
+
+      if (c44 < totalCreditos4) {
+        c166 = totalCreditos4 - c44;
+      } else {
+        c48 = c44 - totalCreditos4;
+      }
+
+      const c167 = parseFloat(document.getElementById('c167').value) || 0;
+      const c47 = Math.max(0, c166 - c167);
+
+      const c49 = parseFloat(document.getElementById('c49').value) || 0;
+      const c168 = parseFloat(document.getElementById('c168').value) || 0;
+
+      const c50 = Math.max(0, c48 - c49 - c168);
+
+      document.getElementById('c166').value = c166;
+      document.getElementById('c47').value = c47;
+      document.getElementById('c48').value = c48;
+      document.getElementById('c50').value = c50;
+
+      // RUBRO 5
+      const c55 = c50;
+      const c51 = parseFloat(document.getElementById('c51').value) || 0;
+      const c52 = parseFloat(document.getElementById('c52').value) || 0;
+      const c169 = parseFloat(document.getElementById('c169').value) || 0;
+      const c56 = parseFloat(document.getElementById('c56').value) || 0;
+
+      const c53 = c51 + c52 + c169;
+      const c57 = c55 + c56;
+
+      document.getElementById('c55').value = c55;
+      document.getElementById('c53').value = c53;
+      document.getElementById('c57').value = c57;
+
+      let c54 = 0;
+      let c58 = 0;
+
+      if (c53 > c57) {
+        c54 = c53 - c57;
+      } else {
+        c58 = c57 - c53;
+      }
+
+      document.getElementById('c54').value = c54;
+      document.getElementById('c58').value = c58;
+    }
+
+    function presentarDeclaracion() {
+      document.getElementById('alertSuccess').style.display = 'block';
+      window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    }
+  </script>
+</body>
+</html>
